@@ -29,8 +29,12 @@ const toneAnalyzer = new ToneAnalyzerV3({
     authenticator: new IamAuthenticator({
       apikey: `${process.env.ToneAnalyzerAPIkey}`,
     }),
-    serviceUrl: 'https://api.us-south.tone-analyzer.watson.cloud.ibm.com/instances/b1e18a7f-9c98-426c-b3d8-839d5b9da123',
+    serviceUrl: `${process.env.APIURL}`,
   });
+
+app.get('/', (req, res) =>{
+    res.send('Examen Cloud. Tone Analyzer Microservice');
+})
 
 app.get('/autor', (req, res) => {
     res.send({
@@ -49,10 +53,11 @@ app.post('/analyze', (req,res) => {
 
     toneAnalyzer.tone(toneParams)
     .then(toneAnalysis => {
-        console.log(JSON.stringify(toneAnalysis, null, 2));
-        res.json(toneAnalysis);
+        //console.log(JSON.stringify(toneAnalysis, null, 2));
+        res.json(toneAnalysis.result.document_tone.tones);
     })
     .catch(err => {
+        res.json(err);
         console.log('error:', err);
     });
 
